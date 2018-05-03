@@ -10,6 +10,7 @@ import UIKit
 class ToDoItemDetailVC: UIViewController,UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
 
     @IBOutlet weak var tableView: UITableView!
+    var viewModel:HomeViewModel?
     
     public var task: TaskDataModel?
     @IBOutlet weak var taskTextField: UITextField!
@@ -29,6 +30,24 @@ class ToDoItemDetailVC: UIViewController,UITableViewDelegate, UITableViewDataSou
         self.title = "Things To Do"
     }
     
+    @IBAction func addBtnAction(_ sender: Any) {
+        let alertController = UIAlertController(title: "Add ToDo Item", message: "", preferredStyle: .alert)
+        alertController.addTextField { (textField : UITextField!) -> Void in
+            textField.placeholder = "Enter ToDo Item"
+        }
+        let saveAction = UIAlertAction(title: "Save", style: .default, handler: { alert -> Void in
+            let firstTextField = alertController.textFields![0] as UITextField
+            self.viewModel?.saveNewTaskToDB(firstTextField.text!, onCompletion: { (success) in
+            })
+        })
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: { (action : UIAlertAction!) -> Void in
+            
+        })
+        alertController.addAction(cancelAction)
+        alertController.addAction(saveAction)
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
     //MARK:- UITablview Delegate/DataSource Methods Methods
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -58,6 +77,9 @@ class ToDoItemDetailVC: UIViewController,UITableViewDelegate, UITableViewDataSou
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == taskTextField {
             textField.resignFirstResponder()
+            if let vm = viewModel {
+                vm.updateTask(task!, name: self.taskTextField.text!) { (success) in }
+            }
         }
         return true
     }

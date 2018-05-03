@@ -41,5 +41,23 @@ class HomeViewModel: NSObject {
             onCompletion(true)
         }
     }
+    
+    func updateTask (_ task: TaskDataModel,name:String,onCompletion: @escaping (Bool) -> Void) {
+        DataManager.sharedManager.updateTask(task, name: name) { (flag) in
+            onCompletion(flag)
+        }
+    }
+    
+    func updateStatusForTask (_ task: TaskDataModel,status:String,onCompletion: @escaping (Bool) -> Void) {
+        DataManager.sharedManager.updateStatusForTask(task, status: status) { (flag) in
+            onCompletion(flag)
+        }
+    }
+    
+    func deleteTask (_ task: TaskDataModel,onCompletion: @escaping (Bool) -> Void) {
+        DataManager.sharedManager.deleteTask(task) { (flag) in
+            onCompletion(flag)
+        }
+    }
 }
 

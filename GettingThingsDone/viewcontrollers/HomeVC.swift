@@ -107,6 +107,7 @@ class HomeVC: UIViewController, UITableViewDataSource,UITableViewDelegate  {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
         let detailVC = storyBoard.instantiateViewController(withIdentifier: "ToDoItemDetailVC") as! ToDoItemDetailVC
+        detailVC.viewModel = viewModel
         if indexPath.section == 0 {
             detailVC.task = viewModel.inprogress_tasks?[indexPath.row]
         } else {
@@ -124,8 +125,10 @@ class HomeVC: UIViewController, UITableViewDataSource,UITableViewDelegate  {
         print("Source section \(sourceIndexPath.section) and index = \(sourceIndexPath.row)")
         print("Dest section \(destinationIndexPath.section) and index = \(destinationIndexPath.row)")
         if (destinationIndexPath.section == 1 && sourceIndexPath.section == 0) {
+            viewModel.updateStatusForTask(viewModel.inprogress_tasks![sourceIndexPath.row], status: "Completed") { (flag) in }
             viewModel.completed_tasks?.insert(viewModel.inprogress_tasks![sourceIndexPath.row] , at: destinationIndexPath.row)
         } else if (destinationIndexPath.section == 0 && sourceIndexPath.section == 1){
+            viewModel.updateStatusForTask(viewModel.inprogress_tasks![sourceIndexPath.row], status: "Yet To Do") { (flag) in }
             viewModel.inprogress_tasks?.insert(viewModel.completed_tasks![sourceIndexPath.row], at: destinationIndexPath.row)
         }
         
@@ -135,8 +138,10 @@ class HomeVC: UIViewController, UITableViewDataSource,UITableViewDelegate  {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             if (indexPath.section == 0) {
+                viewModel.deleteTask(viewModel.inprogress_tasks![indexPath.row]) { (flag) in }
                 viewModel.inprogress_tasks?.remove(at: indexPath.row)
             } else {
+                viewModel.deleteTask(viewModel.completed_tasks![indexPath.row]) { (flag) in }
                 viewModel.completed_tasks?.remove(at: indexPath.row)
             }
             DispatchQueue.main.async {
