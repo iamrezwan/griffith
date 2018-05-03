@@ -2,7 +2,7 @@
 //  HomeVC.swift
 //  GettingThingsDone
 //
-//  Created by T-Mobile on 02/05/18.
+//  Created by Pravin G on 02/05/18.
 //
 
 import UIKit
@@ -14,6 +14,7 @@ class HomeVC: UIViewController, UITableViewDataSource,UITableViewDelegate  {
     var viewModel = HomeViewModel()
 
     @IBOutlet weak var tableView: UITableView!
+    
     //MARK:- Life Cycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -122,8 +123,6 @@ class HomeVC: UIViewController, UITableViewDataSource,UITableViewDelegate  {
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         
-        print("Source section \(sourceIndexPath.section) and index = \(sourceIndexPath.row)")
-        print("Dest section \(destinationIndexPath.section) and index = \(destinationIndexPath.row)")
         if (destinationIndexPath.section == 1 && sourceIndexPath.section == 0) {
             viewModel.updateStatusForTask(viewModel.inprogress_tasks![sourceIndexPath.row], status: "Completed") { (flag) in }
             viewModel.completed_tasks?.insert(viewModel.inprogress_tasks![sourceIndexPath.row] , at: destinationIndexPath.row)

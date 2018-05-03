@@ -2,7 +2,7 @@
 //  DataManager.swift
 //  GettingThingsDone
 //
-//  Created by T-Mobile on 02/05/18.
+//  Created by Pravin G on 02/05/18.
 //
 
 import UIKit
@@ -13,6 +13,7 @@ class DataManager: NSObject {
     static let sharedManager = DataManager()
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
 
+    //Save Task to DB
     public func saveTask(_ task: TaskDataModel,onCompletion: @escaping (Bool) -> Void) {
         appDelegate.persistentContainer.viewContext.perform {
             let managedContext = self.appDelegate.persistentContainer.viewContext
@@ -29,6 +30,7 @@ class DataManager: NSObject {
         }
     }
     
+    //Delete Task to DB
     public func deleteTask(_ task: TaskDataModel,onCompletion: @escaping (Bool) -> Void) {
         appDelegate.persistentContainer.viewContext.perform {
             let userTasks = NSFetchRequest<NSFetchRequestResult>(entityName: "Task")
@@ -59,24 +61,7 @@ class DataManager: NSObject {
         }
     }
     
-    public func fetchTasks(onCompletion: @escaping ([TaskDataModel]?) -> Void) {
-        appDelegate.persistentContainer.viewContext.perform {
-            let userTasks = NSFetchRequest<NSFetchRequestResult>(entityName: "Task")
-            let managedContext = self.appDelegate.persistentContainer.viewContext
-            
-            do {
-                let tasks:[Task] = try managedContext.fetch(userTasks) as! [Task]
-                let tasksArr =  tasks.map({ (task) -> TaskDataModel in
-                    return task.getDataModelObject()
-                })
-            onCompletion(tasksArr)
-            } catch let error as NSError {
-                print("Could not save. \(error), \(error.userInfo)")
-                onCompletion(nil)
-            }
-        }
-    }
-    
+    //Fetch all in progress tasks
     public func fetchInProgressTasks(onCompletion: @escaping ([TaskDataModel]?) -> Void) {
         appDelegate.persistentContainer.viewContext.perform {
             let userTasks = NSFetchRequest<NSFetchRequestResult>(entityName: "Task")
@@ -99,6 +84,7 @@ class DataManager: NSObject {
         }
     }
     
+    //Fetch all in completed tasks
     public func fetchCompletedTasks(onCompletion: @escaping ([TaskDataModel]?) -> Void) {
         appDelegate.persistentContainer.viewContext.perform {
             let userTasks = NSFetchRequest<NSFetchRequestResult>(entityName: "Task")
@@ -120,6 +106,7 @@ class DataManager: NSObject {
         }
     }
     
+    //Update task with name
     public func updateTask(_ task: TaskDataModel,name:String, onCompletion: @escaping (Bool) -> Void) {
         appDelegate.persistentContainer.viewContext.perform {
             let userTasks = NSFetchRequest<NSFetchRequestResult>(entityName: "Task")
@@ -158,7 +145,7 @@ class DataManager: NSObject {
         }
     }
     
-    
+    //Update task with status completed / inprogress
     public func updateStatusForTask(_ task: TaskDataModel,status:String, onCompletion: @escaping (Bool) -> Void) {
         appDelegate.persistentContainer.viewContext.perform {
             let userTasks = NSFetchRequest<NSFetchRequestResult>(entityName: "Task")

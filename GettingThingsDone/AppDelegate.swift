@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  GettingThingsDone
 //
-//  Created by T-Mobile on 02/05/18.
+//  Created by Pravin G on 02/05/18.
 //
 
 import UIKit

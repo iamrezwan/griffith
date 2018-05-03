@@ -2,7 +2,7 @@
 //  HomeViewModel.swift
 //  GettingThingsDone
 //
-//  Created by T-Mobile on 02/05/18.
+//  Created by Pravin G on 02/05/18.
 //
 
 import UIKit
@@ -23,7 +23,6 @@ class HomeViewModel: NSObject {
         task.status = TaskType.InProgress.rawValue
         task.history = [String]()
         DataManager.sharedManager.saveTask(task) { (success) in
-            print("Successs \(success)")
             onCompletion(success)
         }
     }
