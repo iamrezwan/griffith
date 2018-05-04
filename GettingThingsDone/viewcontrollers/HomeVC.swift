@@ -11,7 +11,9 @@ class HomeVC: UIViewController, UITableViewDataSource,UITableViewDelegate  {
 
     @IBOutlet weak var editBtn: UIBarButtonItem!
     
-    var viewModel = HomeViewModel()
+
+    var inprogress_tasks: [TaskDataModel]?
+    var completed_tasks: [TaskDataModel]?
 
     @IBOutlet weak var tableView: UITableView!
     
@@ -23,8 +25,12 @@ class HomeVC: UIViewController, UITableViewDataSource,UITableViewDelegate  {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.fetchAllCompletedTask { (success) in }
-        viewModel.fetchAllIprogressTask{ (success) in }
+        DataManager.sharedManager.fetchCompletedTasks { (tasksModels) in
+            self.completed_tasks = tasksModels
+        }
+        DataManager.sharedManager.fetchInProgressTasks { (tasksModels) in
+            self.inprogress_tasks = tasksModels
+        }
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
@@ -32,7 +38,7 @@ class HomeVC: UIViewController, UITableViewDataSource,UITableViewDelegate  {
     
     //MARK:- Private Methods
     func configureUI() {
-        self.title = "Things To Do"
+        self.title = "Master"
     }
     
     @IBAction func editBtnAction(_ sender: Any) {
@@ -49,36 +55,16 @@ class HomeVC: UIViewController, UITableViewDataSource,UITableViewDelegate  {
     }
     
     @IBAction func addBtnAction(_ sender: Any) {
-        let alertController = UIAlertController(title: "Add ToDo Item", message: "", preferredStyle: .alert)
-        alertController.addTextField { (textField : UITextField!) -> Void in
-            textField.placeholder = "Enter ToDo Item"
-        }
-        let saveAction = UIAlertAction(title: "Save", style: .default, handler: { alert -> Void in
-            let firstTextField = alertController.textFields![0] as UITextField
-            self.viewModel.saveNewTaskToDB(firstTextField.text!, onCompletion: { (success) in
-                if success {
-                    self.viewModel.fetchAllIprogressTask(onCompletion: { (success) in
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                        }
-                    })
-                }
-            })
-        })
-        let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: { (action : UIAlertAction!) -> Void in
-            
-        })
-        alertController.addAction(cancelAction)
-        alertController.addAction(saveAction)
-        
-        self.present(alertController, animated: true, completion: nil)
+        let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
+        let detailVC = storyBoard.instantiateViewController(withIdentifier: "ToDoItemDetailVC") as! ToDoItemDetailVC
+        navigationController?.pushViewController(detailVC, animated: true)
     }
     
     //MARK:- UITablview Delegate/DataSource Methods Methods
 
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     
-        return ((section == 0) ? viewModel.inprogress_tasks?.count ?? 0 : viewModel.completed_tasks?.count ?? 0)!
+        return ((section == 0) ? inprogress_tasks?.count ?? 0 : completed_tasks?.count ?? 0)!
 
     }
     
@@ -91,10 +77,10 @@ class HomeVC: UIViewController, UITableViewDataSource,UITableViewDelegate  {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         
         if (indexPath.section == 0) {
-            let task = viewModel.inprogress_tasks![indexPath.row]
+            let task = inprogress_tasks![indexPath.row]
             cell.textLabel?.text =  task.name
         } else {
-            let task = viewModel.completed_tasks![indexPath.row]
+            let task = completed_tasks![indexPath.row]
             cell.textLabel?.text =  task.name
         }
 
@@ -108,11 +94,10 @@ class HomeVC: UIViewController, UITableViewDataSource,UITableViewDelegate  {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
         let detailVC = storyBoard.instantiateViewController(withIdentifier: "ToDoItemDetailVC") as! ToDoItemDetailVC
-        detailVC.viewModel = viewModel
         if indexPath.section == 0 {
-            detailVC.task = viewModel.inprogress_tasks?[indexPath.row]
+            detailVC.task = inprogress_tasks?[indexPath.row]
         } else {
-            detailVC.task = viewModel.completed_tasks?[indexPath.row]
+            detailVC.task = completed_tasks?[indexPath.row]
         }
         navigationController?.pushViewController(detailVC, animated: true)
     }
@@ -124,11 +109,13 @@ class HomeVC: UIViewController, UITableViewDataSource,UITableViewDelegate  {
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         
         if (destinationIndexPath.section == 1 && sourceIndexPath.section == 0) {
-            viewModel.updateStatusForTask(viewModel.inprogress_tasks![sourceIndexPath.row], status: "Completed") { (flag) in }
-            viewModel.completed_tasks?.insert(viewModel.inprogress_tasks![sourceIndexPath.row] , at: destinationIndexPath.row)
+            DataManager.sharedManager.updateStatusForTask(inprogress_tasks![sourceIndexPath.row], status: "Completed") { (flag) in
+            }
+            completed_tasks?.insert(inprogress_tasks![sourceIndexPath.row] , at: destinationIndexPath.row)
         } else if (destinationIndexPath.section == 0 && sourceIndexPath.section == 1){
-            viewModel.updateStatusForTask(viewModel.inprogress_tasks![sourceIndexPath.row], status: "Yet To Do") { (flag) in }
-            viewModel.inprogress_tasks?.insert(viewModel.completed_tasks![sourceIndexPath.row], at: destinationIndexPath.row)
+            DataManager.sharedManager.updateStatusForTask(inprogress_tasks![sourceIndexPath.row], status: "Yet To Do") { (flag) in
+            }
+            inprogress_tasks?.insert(completed_tasks![sourceIndexPath.row], at: destinationIndexPath.row)
         }
         
 
@@ -137,11 +124,11 @@ class HomeVC: UIViewController, UITableViewDataSource,UITableViewDelegate  {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             if (indexPath.section == 0) {
-                viewModel.deleteTask(viewModel.inprogress_tasks![indexPath.row]) { (flag) in }
-                viewModel.inprogress_tasks?.remove(at: indexPath.row)
+                DataManager.sharedManager.deleteTask(inprogress_tasks![indexPath.row]) { (flag) in}
+                inprogress_tasks?.remove(at: indexPath.row)
             } else {
-                viewModel.deleteTask(viewModel.completed_tasks![indexPath.row]) { (flag) in }
-                viewModel.completed_tasks?.remove(at: indexPath.row)
+                DataManager.sharedManager.deleteTask(completed_tasks![indexPath.row]) { (flag) in}
+                completed_tasks?.remove(at: indexPath.row)
             }
             DispatchQueue.main.async {
                 tableView.reloadData()

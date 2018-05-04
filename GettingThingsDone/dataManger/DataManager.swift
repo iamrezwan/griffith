@@ -8,6 +8,11 @@
 import UIKit
 import CoreData
 
+public enum TaskType :String {
+    case InProgress = "Yet To Do"
+    case Completed = "Completed"
+}
+
 class DataManager: NSObject {
 
     static let sharedManager = DataManager()

@@ -8,6 +8,12 @@
 import UIKit
 import CoreData
 
+public class TaskDataModel {
+    var name: String?
+    var status: String?
+    var history: [String]?
+}
+
 public class Task: NSManagedObject {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Task> {

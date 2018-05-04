@@ -75,24 +75,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="zgh-Wb-DJe">
-                                <rect key="frame" x="0.0" y="164" width="375" height="503"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="DetailCell" id="tQ7-Sf-9d6">
-                                        <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="tQ7-Sf-9d6" id="tT2-nC-lns">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </prototypes>
-                                <connections>
-                                    <outlet property="dataSource" destination="OkA-Hs-Rh0" id="NkN-BZ-5Rs"/>
-                                    <outlet property="delegate" destination="OkA-Hs-Rh0" id="kD8-Zx-tZt"/>
-                                </connections>
-                            </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Task" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IKd-jc-KJV">
                                 <rect key="frame" x="10" y="79" width="355" height="21"/>
                                 <constraints>
@@ -102,9 +84,12 @@
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="66T-sp-hYV">
-                                <rect key="frame" x="0.0" y="105" width="375" height="54"/>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="66T-sp-hYV">
+                                <rect key="frame" x="0.0" y="105" width="375" height="40"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="Mqc-96-EVH"/>
+                                </constraints>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" returnKeyType="done"/>
@@ -117,28 +102,15 @@
                         <constraints>
                             <constraint firstItem="BLX-nl-O37" firstAttribute="trailing" secondItem="IKd-jc-KJV" secondAttribute="trailing" constant="10" id="7XT-1J-lHz"/>
                             <constraint firstItem="IKd-jc-KJV" firstAttribute="leading" secondItem="BLX-nl-O37" secondAttribute="leading" constant="10" id="CCF-Kx-XdR"/>
-                            <constraint firstItem="zgh-Wb-DJe" firstAttribute="top" secondItem="BLX-nl-O37" secondAttribute="top" constant="100" id="Fh7-Yo-0iL"/>
                             <constraint firstItem="66T-sp-hYV" firstAttribute="top" secondItem="IKd-jc-KJV" secondAttribute="bottom" constant="5" id="IOG-V2-Uqi"/>
-                            <constraint firstItem="BLX-nl-O37" firstAttribute="trailing" secondItem="zgh-Wb-DJe" secondAttribute="trailing" id="IY9-rd-ryf"/>
-                            <constraint firstItem="zgh-Wb-DJe" firstAttribute="leading" secondItem="BLX-nl-O37" secondAttribute="leading" id="KUb-47-57y"/>
                             <constraint firstItem="66T-sp-hYV" firstAttribute="leading" secondItem="BLX-nl-O37" secondAttribute="leading" id="U8a-HZ-pFT"/>
-                            <constraint firstItem="BLX-nl-O37" firstAttribute="bottom" secondItem="zgh-Wb-DJe" secondAttribute="bottom" id="XET-CW-16E"/>
                             <constraint firstItem="IKd-jc-KJV" firstAttribute="top" secondItem="BLX-nl-O37" secondAttribute="top" constant="15" id="dQr-po-Ve0"/>
                             <constraint firstItem="BLX-nl-O37" firstAttribute="trailing" secondItem="66T-sp-hYV" secondAttribute="trailing" id="hUZ-XP-pHE"/>
-                            <constraint firstItem="zgh-Wb-DJe" firstAttribute="top" secondItem="66T-sp-hYV" secondAttribute="bottom" constant="5" id="u0E-AY-tDP"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="BLX-nl-O37"/>
                     </view>
-                    <navigationItem key="navigationItem" id="EHS-fx-UlE">
-                        <barButtonItem key="rightBarButtonItem" style="plain" systemItem="add" id="HbO-f5-McE">
-                            <connections>
-                                <action selector="addBtnAction:" destination="OkA-Hs-Rh0" id="x5Y-2y-1LI"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
-                        <outlet property="tableView" destination="zgh-Wb-DJe" id="xCd-c2-gMp"/>
                         <outlet property="taskTextField" destination="66T-sp-hYV" id="a2M-qb-Jsq"/>
                     </connections>
                 </viewController>
